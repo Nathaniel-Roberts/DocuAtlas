@@ -60,6 +60,49 @@
     overflow-y: auto;
 }
 
+h1 {
+    color: #333;
+    font-size: 28px;
+}
+
+pre {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 5px;
+    font-family: monospace;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+/* Breadcrumbs styles */
+.breadcrumbs {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.breadcrumbs a {
+    text-decoration: none;
+    color: #007bff;
+}
+
+.breadcrumbs a:hover {
+    text-decoration: underline;
+}
+
+.breadcrumbs span {
+    color: #555;
+}
+
+.breadcrumbs a:last-child {
+    pointer-events: none;
+    color: #000;
+}
+
+.breadcrumbs a:not(:last-child)::after {
+    content: " > ";
+    padding: 0 5px;
+}
+
 /* Folder content */
 .folder-contents {
     list-style: none;
