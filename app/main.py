@@ -49,8 +49,8 @@ def view_file(filename):
         with open(file_path, "r") as f:
             content = f.read()
 
-        # Convert Markdown content to HTML
-        html_content = markdown.markdown(content)
+        # Convert Markdown content to HTML, enabling tables extension
+        html_content = markdown.markdown(content, extensions=['tables'])
         
         # Generate breadcrumbs for file path
         breadcrumbs = filename.split('/')

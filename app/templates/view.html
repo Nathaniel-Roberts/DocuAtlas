@@ -11,6 +11,34 @@
     </div>
 
     <div class="markdown-content">
-        <pre>{{ content|safe }}</pre>
+        <div class="table-container">
+            <pre>{{ content|safe }}</pre>
+        </div>
     </div>
+
+{% endblock %}
+
+{% block styles %}
+    {{ super() }}
+    <style>
+        /* Styling for Markdown content */
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        .markdown-body table, .markdown-body th, .markdown-body td {
+            border: 1px solid #ddd;
+        }
+        .markdown-body th, .markdown-body td {
+            padding: 8px 12px;
+            text-align: left;
+        }
+        .markdown-body th {
+            background-color: #f4f4f4;
+        }
+        .markdown-body tr:hover {
+            background-color: #f1f1f1;
+        }
+    </style>
 {% endblock %}
