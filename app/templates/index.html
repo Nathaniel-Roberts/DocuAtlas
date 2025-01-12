@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Base</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <h1>Knowledge Base</h1>
+    <div class="container">
+        <!-- Sidebar (Navigation) -->
+        <div class="sidebar">
+            <ul id="file-list">
+                {% for item in files_and_folders %}
+                    <li>
+                        {% if item.type == 'folder' %}
+                            <span class="folder" onclick="toggleFolder('{{ item.name }}')">
+                                <i id="arrow-{{ item.name }}" class="folder-toggle fas fa-chevron-right"></i>
+                                {{ item.name }}
+                                <i class="fas fa-folder" style="float: right;"></i>
+                            </span>
+                            <ul id="folder-{{ item.name }}" class="folder-contents" style="display: none;">
+                                {% for sub_item in item.contents %}
+                                    <li>
+                                        {% if sub_item.type == 'folder' %}
+                                            <span class="folder" onclick="toggleFolder('{{ item.name + '/' + sub_item.name }}')">
+                                                <i id="arrow-{{ item.name + '/' + sub_item.name }}" class="folder-toggle fas fa-chevron-right"></i>
+                                                {{ sub_item.name }}
+                                                <i class="fas fa-folder" style="float: right;"></i>
+                                            </span>
+                                            <ul id="folder-{{ item.name + '/' + sub_item.name }}" class="folder-contents" style="display: none;"></ul>
+                                        {% else %}
+                                            <a href="/view/{{ item.name + '/' + sub_item.name }}">{{ sub_item.name }}</a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <a href="/view/{{ item.name }}">{{ item.name }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Content Area (Right side) -->
+        <div class="content">
+            {% if content %}
+                <h2>{{ filename }}</h2>
+                <div id="file-content">
+                    <pre>{{ content }}</pre>
+                </div>
+            {% else %}
+                <p>Select a file to view its content.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <script>
+        function toggleFolder(folderName) {
+            const folder = document.getElementById(`folder-${folderName}`);
+            const arrow = document.getElementById(`arrow-${folderName}`);
+            if (folder.style.display === "none") {
+                folder.style.display = "block";
+                arrow.classList.replace("fa-chevron-right", "fa-chevron-down");
+            } else {
+                folder.style.display = "none";
+                arrow.classList.replace("fa-chevron-down", "fa-chevron-right");
+            }
+        }
+    </script>
+</body>
+</html>
