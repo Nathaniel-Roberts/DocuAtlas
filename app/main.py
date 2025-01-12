@@ -1,4 +1,5 @@
 import os
+import markdown
 from flask import Flask, render_template, jsonify
 
 app = Flask(__name__)
@@ -45,17 +46,16 @@ def view_file(filename):
         if not os.path.exists(file_path):
             return jsonify({'error': 'File not found'}), 404
 
-        # Read the file content
         with open(file_path, "r") as f:
             content = f.read()
-        
-        # Extract just the filename (no folder name)
-        file_name_only = filename.split('/')[-1].replace('.md', '')
 
-        # Create breadcrumbs (excluding the file name itself)
-        breadcrumbs = filename.replace('.md', '').split('/')
+        # Convert Markdown content to HTML
+        html_content = markdown.markdown(content)
         
-        return render_template('view.html', filename=file_name_only, content=content, files_and_folders=files_and_folders, breadcrumbs=breadcrumbs)
+        # Generate breadcrumbs for file path
+        breadcrumbs = filename.split('/')
+
+        return render_template('view.html', filename=filename, content=html_content, files_and_folders=files_and_folders, breadcrumbs=breadcrumbs)
     except Exception as e:
         return jsonify({'error': f"Error loading file: {str(e)}"}), 500
 

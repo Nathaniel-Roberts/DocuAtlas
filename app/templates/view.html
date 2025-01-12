@@ -10,5 +10,7 @@
         {% endfor %}
     </div>
 
-    <pre>{{ content }}</pre>
+    <div class="markdown-content">
+        <pre>{{ content|safe }}</pre>
+    </div>
 {% endblock %}
