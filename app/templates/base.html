@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Knowledge Base</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <div id="sidebar">
+            <h2>Knowledge Base</h2>
+            <ul id="file-list">
+                {% for item in files_and_folders %}
+                    <li>
+                        {% if item.type == 'folder' %}
+                            <span class="folder" onclick="toggleFolder('{{ item.name }}')">
+                                <i id="arrow-{{ item.name }}" class="folder-toggle fas fa-chevron-right"></i>
+                                {{ item.name }}
+                                <i class="fas fa-folder" style="float: right;"></i>
+                            </span>
+                            <ul id="folder-{{ item.name }}" class="folder-contents" style="display: none;">
+                                {% for sub_item in item.contents %}
+                                    <li>
+                                        {% if sub_item.type == 'folder' %}
+                                            <span class="folder" onclick="toggleFolder('{{ item.name + '/' + sub_item.name }}')">
+                                                <i id="arrow-{{ item.name + '/' + sub_item.name }}" class="folder-toggle fas fa-chevron-right"></i>
+                                                {{ sub_item.name }}
+                                                <i class="fas fa-folder" style="float: right;"></i>
+                                            </span>
+                                            <ul id="folder-{{ item.name + '/' + sub_item.name }}" class="folder-contents" style="display: none;">
+                                            </ul>
+                                        {% else %}
+                                            <a href="/view/{{ item.name + '/' + sub_item.name }}">{{ sub_item.name }}</a>
+                                        {% endif %}
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        {% else %}
+                            <a href="/view/{{ item.name }}">{{ item.name }}</a>
+                        {% endif %}
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <!-- Main Content -->
+        <div id="main-content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    <script>
+        function toggleFolder(folderName) {
+            const folder = document.getElementById(`folder-${folderName}`);
+            const arrow = document.getElementById(`arrow-${folderName}`);
+            
+            if (folder.style.display === "none") {
+                folder.style.display = "block";
+                arrow.classList.replace("fa-chevron-right", "fa-chevron-down");
+                localStorage.setItem(folderName, "expanded");
+            } else {
+                folder.style.display = "none";
+                arrow.classList.replace("fa-chevron-down", "fa-chevron-right");
+                localStorage.setItem(folderName, "collapsed");
+            }
+        }
+
+        function restoreFolderState() {
+            const folders = document.querySelectorAll('.folder');
+            
+            folders.forEach(folder => {
+                const folderName = folder.textContent.trim();
+                const folderState = localStorage.getItem(folderName);
+                
+                const folderElement = document.getElementById(`folder-${folderName}`);
+                const arrow = document.getElementById(`arrow-${folderName}`);
+                
+                if (folderState === "expanded") {
+                    folderElement.style.display = "block";
+                    arrow.classList.replace("fa-chevron-right", "fa-chevron-down");
+                } else {
+                    folderElement.style.display = "none";
+                    arrow.classList.replace("fa-chevron-down", "fa-chevron-right");
+                }
+            });
+        }
+
+        window.onload = restoreFolderState;
+    </script>
+</body>
+</html>
